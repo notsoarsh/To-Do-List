@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <style>
+
+        body{
+            background-color: beige;
+            
+            max-width: 100%;
+            
+
+        }
+        .task {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            width: 200px;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 2px 6px;
+            font-size: 16px;
+        }
+        .container-fluid{
+            margin-left:40%;
+            margin-top:10%;
+            padding:20px;
+        }
+        .ubuntu-bold h2 {
+            font-family: "Ubuntu", sans-serif;
+            font-weight: 700;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <h2>TO-DO LIST</h2>
+        <div>
+            <form action="#" onsubmit="event.preventDefault()">
+                <label for="text">Enter Task</label>
+                <input type="text" name="name" placeholder="Enter Task" id="newTask">
+                <br>
+                <button onclick="addTask()">ADD</button>
+            </form>
+        </div>
+        <div id="myDiv"></div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            loadTasks();
+        };
+
+        function loadTasks() {
+            var savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            savedTasks.forEach(function(task) {
+                addTaskToDOM(task);
+            });
+        }
+
+        function addTask() {
+            var taskValue = document.getElementById("newTask").value;
+            if (taskValue !== "") {
+                addTaskToDOM(taskValue);
+                var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+                tasks.push(taskValue);
+                localStorage.setItem("tasks", JSON.stringify(tasks));
+
+                document.getElementById("newTask").value = ""; 
+            }
+        }
+
+        function addTaskToDOM(taskValue) {
+            var taskElement = document.createElement("div");
+            taskElement.className = "task";
+            
+            var taskText = document.createElement("span");
+            taskText.textContent = taskValue;
+
+            var deleteButton = document.createElement("button");
+            deleteButton.textContent = "x";
+            deleteButton.className = "delete-btn";
+            deleteButton.onclick = function() {
+                removeTask(taskElement, taskValue);
+            };
+
+            taskElement.appendChild(taskText);
+            taskElement.appendChild(deleteButton);
+            document.getElementById("myDiv").appendChild(taskElement);
+        }
+
+        function removeTask(taskElement, taskValue) {
+            document.getElementById("myDiv").removeChild(taskElement);
+
+            var storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            var updatedTasks = storedTasks.filter(function(task) {
+                return task !== taskValue;
+            });
+            localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+        }
+    </script>
+</body>
+</html>
